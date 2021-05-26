@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "951187966189",
+    "project_id": "instaclone-f4d9f",
+    "storage_bucket": "instaclone-f4d9f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:951187966189:android:31801ca35f23ebdc1864e4",
+        "android_client_info": {
+          "package_name": "com.example.instaclone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "951187966189-htd15n9gf68thcp34kfljdsmst14l14g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvvph8ja-E8cd7zxCZCIg8zWxNeNlrRq8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "951187966189-htd15n9gf68thcp34kfljdsmst14l14g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
