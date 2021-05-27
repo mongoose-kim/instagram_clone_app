@@ -23,6 +23,7 @@ import com.example.instaclone.navigation.model.ContentDTO
 import com.example.instaclone.navigation.model.FollowDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_detail.view.*
 import kotlinx.android.synthetic.main.fragment_user.view.*
@@ -34,6 +35,8 @@ class UserFragment : Fragment() {
     var auth : FirebaseAuth? = null
     var currentUserUid : String? = null
 
+    var followListenerRegistration: ListenerRegistration? = null
+
     companion object{
         var PICK_PROFILE_FROM_ALBUM = 10
     }
@@ -44,6 +47,7 @@ class UserFragment : Fragment() {
         firestore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
         currentUserUid = auth?.currentUser?.uid
+
 
         if(uid == currentUserUid){
             fragmentView?.account_btn_follow_signout?.text = getString(R.string.signout)
@@ -82,8 +86,13 @@ class UserFragment : Fragment() {
         return fragmentView
     }
 
+    override fun onStop() {
+        super.onStop()
+        followListenerRegistration?.remove()
+    }
+
     fun getFollowerAndFollowing(){
-        firestore?.collection("users")?.document(uid!!)?.addSnapshotListener{ documentSnapshot, firebaseFirestoreException ->
+        followListenerRegistration = firestore?.collection("users")?.document(uid!!)?.addSnapshotListener{ documentSnapshot, firebaseFirestoreException ->
             if(documentSnapshot == null) return@addSnapshotListener
             var followDTO = documentSnapshot.toObject(FollowDTO::class.java)
             if(followDTO?.followingCount != null){
@@ -94,12 +103,9 @@ class UserFragment : Fragment() {
                 if(followDTO?.followers?.containsKey(currentUserUid!!)){
                     fragmentView?.account_btn_follow_signout?.text = getString(R.string.follow_cancel)
                     fragmentView?.account_btn_follow_signout?.background?.setColorFilter(ContextCompat.getColor(activity!!, R.color.colorLightGray), PorterDuff.Mode.MULTIPLY)
-                }else{
+                }else if(uid != currentUserUid) {
                     fragmentView?.account_btn_follow_signout?.text = getString(R.string.follow)
-                    if(uid != currentUserUid){
-                        fragmentView?.account_btn_follow_signout?.text = getString(R.string.follow)
-                        fragmentView?.account_btn_follow_signout?.background?.colorFilter = null
-                    }
+                    fragmentView?.account_btn_follow_signout?.background?.colorFilter = null
                 }
             }
         }

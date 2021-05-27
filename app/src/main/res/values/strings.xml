@@ -27,8 +27,8 @@
     <string name="post">Post</string>
     <string name="following">Following</string>
     <string name="follower">Follower</string>
-    <string name="follow">Follow</string>
-    <string name="follow_cancel">Follow cancel</string>
+    <string name="follow">FOLLOW</string>
+    <string name="follow_cancel">UNFOLLOW</string>
     <string name="profile">Profile</string>
     <string name="count_0">0</string>
 
