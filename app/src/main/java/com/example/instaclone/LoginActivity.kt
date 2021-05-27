@@ -61,6 +61,11 @@ class LoginActivity : AppCompatActivity() {
         callbackManager = CallbackManager.Factory.create()
     }
 
+    override fun onStart(){
+        super.onStart()
+        moveMainPage(auth?.currentUser)
+    }
+
     fun printHashKey() {
         try {
             val info = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
@@ -150,26 +155,25 @@ class LoginActivity : AppCompatActivity() {
         }
     }
     fun signinAndSignup(){
-        auth?.createUserWithEmailAndPassword(email_edittext.text.toString().trim(), password_edittext.text.toString().trim())
+        auth?.createUserWithEmailAndPassword(email_edittext.text.toString(), password_edittext.text.toString())
             ?.addOnCompleteListener{
                 task->
                 if(task.isSuccessful){
                     //회원가입
                     moveMainPage(task.result?.user)
                 }
-                else if(task.exception?.message.isNullOrEmpty()){
-                   //에러
-                    Toast.makeText(this,task.exception?.message,Toast.LENGTH_LONG).show()
-                }
                 else {
-                    //로그인
-                    signinEmail()
+                    //Login if you have account
+                    if (task.exception?.message.equals("The email address is already in use by another account."))
+                        signinEmail()
+                    //Show the error message
+                    else Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG).show()
                 }
             }
     }
 
     fun signinEmail(){
-        auth?.createUserWithEmailAndPassword(email_edittext.text.toString().trim(), password_edittext.text.toString().trim())
+        auth?.signInWithEmailAndPassword(email_edittext.text.toString(), password_edittext.text.toString())
             ?.addOnCompleteListener{
                     task->
                 if(task.isSuccessful){
@@ -177,8 +181,7 @@ class LoginActivity : AppCompatActivity() {
                     moveMainPage(task.result?.user)
                 }
                 else {
-                    //에러
-                    Toast.makeText(this,task.exception?.message,Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG).show()
                 }
             }
     }
@@ -186,6 +189,7 @@ class LoginActivity : AppCompatActivity() {
     fun moveMainPage(user: FirebaseUser?){
         if(user != null){
             startActivity(Intent(this,MainActivity::class.java))
+            finish()
         }
     }
 }

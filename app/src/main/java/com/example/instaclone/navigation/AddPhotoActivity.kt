@@ -30,6 +30,7 @@ class AddPhotoActivity : AppCompatActivity() {
 
         //저장소 초기화
         storage = FirebaseStorage.getInstance()
+
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
@@ -55,6 +56,7 @@ class AddPhotoActivity : AppCompatActivity() {
         }
     }
 
+    //방법1.구글 권장
     fun contentUpload(){
         var timestamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         var imageFileName = "IMAGE_" + timestamp + "_.png"
@@ -72,14 +74,14 @@ class AddPhotoActivity : AppCompatActivity() {
             contentDTO.exlain = addphoto_edit_explain.text.toString()
             contentDTO.timestamp = System.currentTimeMillis()
 
-            firestore?.collection("images")?.document()?.set(contentDTO)
+            firestore?.collection("images")?.add(contentDTO)
 
             setResult(Activity.RESULT_OK)
 
             finish()
         }
 
-        //Callback
+        //방법2.Callback method
 //        storageRef?.putFile(photoUri!!)?.addOnSuccessListener {
 //            storageRef.downloadUrl.addOnSuccessListener { uri ->
 //                var contentDTO = ContentDTO()
