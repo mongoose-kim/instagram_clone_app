@@ -19,6 +19,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.instaclone.LoginActivity
 import com.example.instaclone.MainActivity
 import com.example.instaclone.R
+import com.example.instaclone.navigation.model.AlarmDTO
 import com.example.instaclone.navigation.model.ContentDTO
 import com.example.instaclone.navigation.model.FollowDTO
 import com.google.firebase.auth.FirebaseAuth
@@ -145,6 +146,7 @@ class UserFragment : Fragment() {
                 followDTO!!.followerCount = 1
                 followDTO!!.followers[uid!!] = true
 
+                followerAlarm(uid!!)
                 transaction.set(tsDocFollower, followDTO!!)
                 return@runTransaction
             }
@@ -155,10 +157,21 @@ class UserFragment : Fragment() {
             }else{
                 followDTO!!.followerCount = followDTO!!.followerCount + 1
                 followDTO!!.followers[currentUserUid!!] = true
+                followerAlarm(uid!!)
             }
             transaction.set(tsDocFollower, followDTO!!)
             return@runTransaction
         }
+    }
+
+    fun followerAlarm(destinationUid : String){
+        var alarmDTO = AlarmDTO()
+        alarmDTO.destinationUid = destinationUid
+        alarmDTO.userId = auth?.currentUser?.email
+        alarmDTO.uid = auth?.currentUser?.uid
+        alarmDTO.kind = 2
+        alarmDTO.timestamp = System.currentTimeMillis()
+        FirebaseFirestore.getInstance().collection("alarms").document().set(alarmDTO)
     }
 
     fun getProfileImage(){
